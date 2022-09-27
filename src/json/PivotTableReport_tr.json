@@ -1,0 +1,184 @@
+{
+    "dataSource": {
+        "data": [
+            {
+                "Kategori": "İyi",
+                "Kıta": "Kuzey Amerika",
+                "Ülke": "Birleşik Devletler",
+                "Şehir": "New York",
+                "Nüfus": "20000000",
+                "Ekonomi": "800000000000"
+            },
+            {
+                "Kategori": "İyi",
+                "Kıta": "Kuzey Amerika",
+                "Ülke": "Birleşik Devletler",
+                "Şehir": "Los Angeles",
+                "Nüfus": "12000000",
+                "Ekonomi": "400000000000"
+            },
+            {
+                "Kategori": "Orta",
+                "Kıta": "Kuzey Amerika",
+                "Ülke": "Birleşik Devletler",
+                "Şehir": "Miami",
+                "Nüfus": "4000000",
+                "Ekonomi": "100000000000"
+            },
+            {
+                "Kategori": "Kötü",
+                "Kıta": "Kuzey Amerika",
+                "Ülke": "Birleşik Devletler",
+                "Şehir": "Seattle",
+                "Nüfus": "2000000",
+                "Ekonomi": "20000000000"
+            },
+            {
+                "Kategori": "İyi",
+                "Kıta": "Avrupa",
+                "Ülke": "Birleşik Krallık",
+                "Şehir": "Londra",
+                "Nüfus": "12000000",
+                "Ekonomi": "450000000000"
+            },
+            {
+                "Kategori": "Orta",
+                "Kıta": "Avrupa",
+                "Ülke": "Almanya",
+                "Şehir": "Münich",
+                "Nüfus": "2000000",
+                "Ekonomi": "150000000000"
+            },
+            {
+                "Kategori": "İyi",
+                "Kıta": "Avrupa",
+                "Ülke": "Fransa",
+                "Şehir": "Paris",
+                "Nüfus": "3000000",
+                "Ekonomi": "250000000000"
+            },
+            {
+                "Kategori": "Orta",
+                "Kıta": "Avrupa",
+                "Ülke": "İspanya",
+                "Şehir": "Barselona",
+                "Nüfus": "2000000",
+                "Ekonomi": "80000000000"
+            },
+            {
+                "Kategori": "Kötü",
+                "Kıta": "Avrupa",
+                "Ülke": "Rusya",
+                "Şehir": "St Petersburg",
+                "Nüfus": "3000000",
+                "Ekonomi": "30000000000"
+            },
+            {
+                "Kategori": "Kötü",
+                "Kıta": "Avrupa",
+                "Ülke": "Polonya",
+                "Şehir": "Varşova",
+                "Nüfus": "1000000",
+                "Ekonomi": "20000000000"
+            },
+            {
+                "Kategori": "İyi",
+                "Kıta": "Asya",
+                "Ülke": "Japonya",
+                "Şehir": "Tokyo",
+                "Nüfus": "30000000",
+                "Ekonomi": "600000000000"
+            },
+            {
+                "Kategori": "Orta",
+                "Kıta": "Asya",
+                "Ülke": "Hindistan",
+                "Şehir": "Yeni Delhi",
+                "Nüfus": "22000000",
+                "Ekonomi": "280000000000"
+            },
+            {
+                "Kategori": "Kötü",
+                "Kıta": "Asya",
+                "Ülke": "Çin",
+                "Şehir": "Vuhan",
+                "Nüfus": "7000000",
+                "Ekonomi": "180000000000"
+            }
+        ]
+    },
+    "slice": {
+        "rows": [
+            {
+                "uniqueName": "Ülke",
+                "sort": "asc"
+            },
+            {
+                "uniqueName": "Şehir",
+                "sort": "asc"
+            },
+            {
+                "uniqueName": "Measures"
+            }
+        ],
+        "columns": [
+            {
+                "uniqueName": "Kategori",
+                "sort": "asc"
+            },
+            {
+                "uniqueName": "Kıta",
+                "sort": "asc"
+            }
+        ],
+        "measures": [
+            {
+                "uniqueName": "Nüfus",
+                "aggregation": "sum"
+            },
+            {
+                "uniqueName": "Ekonomi",
+                "aggregation": "sum"
+            }
+        ],
+        "options": {
+            "grid": {
+                "type": "compact",
+                "title": "",
+                "showFilter": true,
+                "showHeaders": true,
+                "showTotals": true,
+                "showGrandTotals": "on",
+                "showHierarchies": true,
+                "showHierarchyCaptions": true,
+                "showReportFiltersArea": true
+            },
+            "configuratorActive": false,
+            "configuratorButton": true,
+            "showAggregations": true,
+            "showCalculatedValuesButton": true,
+            "drillThrough": true,
+            "showDrillThroughConfigurator": true,
+            "sorting": "on",
+            "datePattern": "dd/MM/yyyy",
+            "dateTimePattern": "dd/MM/yyyy HH:mm:ss",
+            "saveAllFormats": false,
+            "showDefaultSlice": true,
+            "defaultHierarchySortName": "asc"
+        },
+        "formats": [
+            {
+                "name": "",
+                "thousandsSeparator": " ",
+                "decimalSeparator": ".",
+                "decimalPlaces": 2,
+                "maxSymbols": 20,
+                "currencySymbol": "",
+                "currencySymbolAlign": "left",
+                "nullValue": " ",
+                "infinityValue": "Infinity",
+                "divideByZeroValue": "Infinity"
+            }
+        ]
+    }
+}

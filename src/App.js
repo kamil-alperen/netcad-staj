@@ -9,13 +9,21 @@ import {
   TeamOutlined,
   UserOutlined,
   MailOutlined,
-  GlobalOutlined
+  GlobalOutlined,
+  TableOutlined,
+  FormOutlined,
+  LoginOutlined,
+  FilePdfOutlined
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, Avatar } from 'antd';
 import { MainRoutes } from './routers/Routers';
 import { Provider } from 'react-redux';
 import store from './Store';
 import axios from 'axios';
+
+const URL = window.location.href;
+const regex = /http[s]?:\/\/[A-Za-z:]*/g;
+export const BASE_URL = URL.match(regex)[0];
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -61,6 +69,12 @@ const App = (props) => {
             <Menu.Item key="Home" icon={<PieChartOutlined/>}><Link to="/home">Home</Link></Menu.Item>
             <Menu.Item key="Admin" icon={<DesktopOutlined/>}><Link to="/admin">Admin</Link></Menu.Item>
             <Menu.Item key="Map" icon={<GlobalOutlined />}><Link to="/map">Map</Link></Menu.Item>
+            <Menu.Item key="Pivot-Table1" icon={<TableOutlined />}><Link to="/pivot-table1">Pivot Table 1</Link></Menu.Item>
+            <Menu.Item key="Pivot-Table2" icon={<TableOutlined />}><Link to="/pivot-table2">Pivot Table 2</Link></Menu.Item>
+            <Menu.Item key="Pivot-Table3" icon={<TableOutlined />}><Link to="/pivot-table3">Pivot Table 3</Link></Menu.Item>
+            <Menu.Item key="Form" icon={<FormOutlined />}><Link to="/form">Form</Link></Menu.Item>
+            <Menu.Item key="Login" icon={<LoginOutlined />}><Link to="/login">Login</Link></Menu.Item>
+            <Menu.Item key="pdffile" icon={<FilePdfOutlined />}><Link to="/pdffile">PDF Files</Link></Menu.Item>
         </Menu>
       </Sider>
       <Layout className="site-layout">

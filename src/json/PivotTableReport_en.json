@@ -1,0 +1,184 @@
+{
+    "dataSource": {
+        "data": [
+            {
+                "Category": "Good",
+                "Continent": "North America",
+                "Country": "United States",
+                "City": "New York",
+                "Population": "20000000",
+                "GDP": "800000000000"
+            },
+            {
+                "Category": "Good",
+                "Continent": "North America",
+                "Country": "United States",
+                "City": "Los Angeles",
+                "Population": "12000000",
+                "GDP": "400000000000"
+            },
+            {
+                "Category": "Middle",
+                "Continent": "North America",
+                "Country": "United States",
+                "City": "Miami",
+                "Population": "4000000",
+                "GDP": "100000000000"
+            },
+            {
+                "Category": "Bad",
+                "Continent": "North America",
+                "Country": "United States",
+                "City": "Seattle",
+                "Population": "2000000",
+                "GDP": "20000000000"
+            },
+            {
+                "Category": "Good",
+                "Continent": "Europe",
+                "Country": "United Kingdom",
+                "City": "London",
+                "Population": "12000000",
+                "GDP": "450000000000"
+            },
+            {
+                "Category": "Middle",
+                "Continent": "Europe",
+                "Country": "Germany",
+                "City": "Munich",
+                "Population": "2000000",
+                "GDP": "150000000000"
+            },
+            {
+                "Category": "Good",
+                "Continent": "Europe",
+                "Country": "France",
+                "City": "Paris",
+                "Population": "3000000",
+                "GDP": "250000000000"
+            },
+            {
+                "Category": "Middle",
+                "Continent": "Europe",
+                "Country": "Spain",
+                "City": "Barcelona",
+                "Population": "2000000",
+                "GDP": "80000000000"
+            },
+            {
+                "Category": "Bad",
+                "Continent": "Europe",
+                "Country": "Russia",
+                "City": "St Petersburg",
+                "Population": "3000000",
+                "GDP": "30000000000"
+            },
+            {
+                "Category": "Bad",
+                "Continent": "Europe",
+                "Country": "Poland",
+                "City": "Warsaw",
+                "Population": "1000000",
+                "GDP": "20000000000"
+            },
+            {
+                "Category": "Good",
+                "Continent": "Asia",
+                "Country": "Japan",
+                "City": "Tokyo",
+                "Population": "30000000",
+                "GDP": "600000000000"
+            },
+            {
+                "Category": "Middle",
+                "Continent": "Asia",
+                "Country": "India",
+                "City": "New Delhi",
+                "Population": "22000000",
+                "GDP": "280000000000"
+            },
+            {
+                "Category": "Bad",
+                "Continent": "Asia",
+                "Country": "China",
+                "City": "Vuhan",
+                "Population": "7000000",
+                "GDP": "180000000000"
+            }
+        ]
+    },
+    "slice": {
+        "rows": [
+            {
+                "uniqueName": "Country",
+                "sort": "asc"
+            },
+            {
+                "uniqueName": "City",
+                "sort": "asc"
+            },
+            {
+                "uniqueName": "Measures"
+            }
+        ],
+        "columns": [
+            {
+                "uniqueName": "Category",
+                "sort": "asc"
+            },
+            {
+                "uniqueName": "Continent",
+                "sort": "asc"
+            }
+        ],
+        "measures": [
+            {
+                "uniqueName": "Population",
+                "aggregation": "sum"
+            },
+            {
+                "uniqueName": "GDP",
+                "aggregation": "sum"
+            }
+        ],
+        "options": {
+            "grid": {
+                "type": "compact",
+                "title": "",
+                "showFilter": true,
+                "showHeaders": true,
+                "showTotals": true,
+                "showGrandTotals": "on",
+                "showHierarchies": true,
+                "showHierarchyCaptions": true,
+                "showReportFiltersArea": true
+            },
+            "configuratorActive": false,
+            "configuratorButton": true,
+            "showAggregations": true,
+            "showCalculatedValuesButton": true,
+            "drillThrough": true,
+            "showDrillThroughConfigurator": true,
+            "sorting": "on",
+            "datePattern": "dd/MM/yyyy",
+            "dateTimePattern": "dd/MM/yyyy HH:mm:ss",
+            "saveAllFormats": false,
+            "showDefaultSlice": true,
+            "defaultHierarchySortName": "asc"
+        },
+        "formats": [
+            {
+                "name": "",
+                "thousandsSeparator": " ",
+                "decimalSeparator": ".",
+                "decimalPlaces": 2,
+                "maxSymbols": 20,
+                "currencySymbol": "",
+                "currencySymbolAlign": "left",
+                "nullValue": " ",
+                "infinityValue": "Infinity",
+                "divideByZeroValue": "Infinity"
+            }
+        ]
+    }
+}
