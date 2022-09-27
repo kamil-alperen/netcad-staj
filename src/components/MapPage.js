@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Map, {Source, Layer} from "react-map-gl";
 import { Button } from 'antd';
 import store from "../Store";
+import axios from "axios";
 let token = "pk.eyJ1Ijoia2FtaWxhbHBlcmVuIiwiYSI6ImNsODJ4eG0wODAwZmEzb29leXV3MW85MzgifQ.tFEAukFpWFqBMubOcokQEg";
 
 let globalSetGeojson;
+let globalSetSourceList;
 let clickedButton;
 
 const topButtonStyle = {
@@ -26,26 +28,28 @@ const lineLayerStyle = {
     id: 'route',
     type: 'line',
     paint: {
-        'line-color': '#000',
+        'line-color': '#000000',
+        'line-dasharray' : [1,1,1,1,1,1,1,1,1,1,1,1],
         'line-width': 8
     }
 }
 
 const polygonLayerStyle = {
-    id: 'maine',
+    id: 'area',
     type: 'fill',
     layout: {},
     paint: {
         'fill-color': '#0080ff',
-        'fill-opacity': 0.5
+        'fill-opacity': 0.5,
+        'fill-outline-color' : '#000000'
     }
 }
 
 const handlePoint = (long, lat) => {
-    console.log("Handle Point");
     let features = [...store.getState().features];
     let newFeature = {type: 'Feature', geometry: {type: 'Point', coordinates: [long, lat]}};
     features.push(newFeature)
+    console.log("set");
     globalSetGeojson({
         type: 'FeatureCollection',
         features: features
@@ -57,7 +61,6 @@ const handleLine = (long, lat) => {
     let longLat = [...store.getState().longLat];
     let singlePoint = longLat.length === 2;
     if (!singlePoint) {
-        console.log("first point");
         let longLat = [long, lat];
         store.dispatch({type : "LONGLAT", payload : longLat})
 
@@ -68,7 +71,7 @@ const handleLine = (long, lat) => {
             features: features
         });
     } else {
-        console.log("second point");
+        setSources(true);
         let coordinates = [[longLat[0], longLat[1]]];
         let initial_i = coordinates[0][0];
         let initial_j = coordinates[0][1];
@@ -97,7 +100,6 @@ const handlePolygon = (long, lat) => {
     let longLat = [...store.getState().longLat];
     if (longLat.length === 0) {
         polygonCount = 0;
-        console.log("first point");
         let longLat = [[long, lat]];
         store.dispatch({type : "LONGLAT", payload : longLat})
 
@@ -108,8 +110,8 @@ const handlePolygon = (long, lat) => {
             features: features
         });
     } else if (longLat.length === 1) {
+        setSources(true);
         polygonCount++;
-        console.log("second point");
         let newLongLat = [longLat[0],[long, lat]];
         store.dispatch({type : "LONGLAT", payload : newLongLat})
 
@@ -131,14 +133,13 @@ const handlePolygon = (long, lat) => {
             features: features
         });
     } else {
+        setSources(true);
         polygonCount++;
-        console.log("other points");
         let newLongLat = [longLat[0],[long, lat]];
         store.dispatch({type : "LONGLAT", payload : newLongLat})
         let prevCoordinates = polygonCount === 2 
                                 ? features[features.length - 1].geometry.coordinates 
                                 : features[features.length - 1].geometry.coordinates[0];
-        console.log(prevCoordinates);
 
         let coordinates = [longLat[1]];
         let initial_i = coordinates[0][0];
@@ -159,7 +160,6 @@ const handlePolygon = (long, lat) => {
             features: features,
             updated : polygonCount
         });
-
     }
     
 }
@@ -181,15 +181,50 @@ const handleClick = (e) => {
             break;
     }
     
-
     
 }
 
+async function getAllPolygons() {
+    let polygonsCoordinates = [];
+    let features = [...store.getState().features];
+    const response = await axios.get('http://localhost:5232/api/Place/GetAll');
+    
+    response.data.forEach(d => {
+        let longAdd = 27 + Math.random() * 17;
+        let latAdd = 36 + Math.random() * 11;
+        if (d.location.type === "Polygon") {
+            d.location.coordinates[0].forEach(c => {
+                c[0] += longAdd;
+                c[1] += latAdd;
+            })
+            polygonsCoordinates.push(d.location.coordinates);
+        }
+    })
+
+    polygonsCoordinates = polygonsCoordinates;
+
+    polygonsCoordinates.forEach(coordinate => {
+
+        let newFeature = {type: 'Feature', geometry: {type: 'Polygon', coordinates: coordinate}};
+        features.push(newFeature);
+    })
+    
+    polygonCount++;
+    globalSetGeojson({
+        type: 'FeatureCollection',
+        features: features,
+        updated : polygonCount
+    });
+}
+
 const buttonClick = (e) => {
-    clickedButton = e.target.innerText;
+    let buttonNames = ['Point', 'Line', 'Polygon'];
+    if (buttonNames.includes(e.target.innerText)) {
+        clickedButton = e.target.innerText;
+    }
     store.dispatch({type : "LONGLAT", payload : []})
     const [point, line, polygon] = [document.getElementById("point"), document.getElementById("line"), document.getElementById("polygon")];
-    switch(clickedButton) {
+    switch(e.target.innerText) {
         case "Point":
             point.style.backgroundColor = 'blue';
             line.style.backgroundColor = 'rgb(24,144,255)';
@@ -205,103 +240,174 @@ const buttonClick = (e) => {
             line.style.backgroundColor = 'rgb(24,144,255)';
             polygon.style.backgroundColor = 'blue';
             break;
+        case "Delete":
+            globalSetGeojson({
+                type: 'FeatureCollection',
+                features: [
+                    {type: 'Feature', geometry: {type: 'Point', coordinates: []}}
+                ]
+            });
+            break;
+        case "Get All":
+            getAllPolygons();
+            break;
         default:
             break;
     }
 
 }
 
-let polygonArray = [
-    [
-        [28.97, 41.01],
-        [28.98, 41.01],
-        [28.99, 41.01],
-        [29.00, 41.01],
-        [29.01, 41.01],
-        [29.02, 41.01],
-        [29.03, 41.01],
-        [29.04, 41.01],
-        [29.04, 41.01],
-        [29.04, 41.02],
-        [29.04, 41.03],
-        [29.04, 41.04],
-        [29.04, 41.05],
-        [29.04, 41.06],
-        [29.04, 41.07],
-        [29.04, 41.08],
-        [29.04, 41.08],
-        [29.03, 41.08],
-        [29.02, 41.08],
-        [29.01, 41.08],
-        [29.00, 41.08],
-        [28.99, 41.08],
-        [28.98, 41.08],
-        [28.97, 41.08],
-        [28.97, 41.08],
-        [28.97, 41.07],
-        [28.97, 41.06],
-        [28.97, 41.05],
-        [28.97, 41.04],
-        [28.97, 41.03],
-        [28.97, 41.02],
-        [28.97, 41.01],
-    ]
+async function getPolygon(polygonName) {
+    let features = [...store.getState().features];
+    const response = await axios.get(`http://localhost:5232/api/Place/Get?name=${polygonName}`);
+
+    let longAdd = 27 + Math.random() * 17;
+    let latAdd = 36 + Math.random() * 11;
+    if (response.data.location.type === "Polygon") {
+        let coordinates = response.data.location.coordinates;
+        console.log(coordinates);
+        coordinates[0].forEach(c => {
+            c[0] += longAdd;
+            c[1] += latAdd;
+        })
+
+        let newFeature = {type: 'Feature', geometry: {type: 'Polygon', coordinates: coordinates}};
+        features.push(newFeature);
+    }
     
-];
+    polygonCount++;
+    globalSetGeojson({
+        type: 'FeatureCollection',
+        features: features,
+        updated : polygonCount
+    });
+}
+
+function setSources(removeLast) {
+    let sources = [];
+    let features = [...store.getState().features];
+
+    let sourceCount = 0;
+    let length = features.length;
+    features.forEach(feature => {
+        if (removeLast && sourceCount === length-1) {
+            globalSetSourceList(sources);
+            return;
+        }
+        let layerStyle;
+        let colors;
+        switch(feature.geometry.type) {
+            case "Point":
+                layerStyle = pointLayerStyle;
+                break;
+            case "LineString":
+                layerStyle = lineLayerStyle;
+                colors = "";
+                for (let i = 0;i < 6;i++) {
+                    let newColor = parseInt(Math.random()*15);
+                    if (newColor > 9) {
+                        newColor = String.fromCharCode(97 + (newColor - 10))
+                    }
+                    colors += newColor;
+                }
+                layerStyle.paint["line-color"] = '#'+colors;
+                break;
+            case "Polygon":
+                layerStyle = polygonLayerStyle;
+                colors = "";
+                for (let i = 0;i < 6;i++) {
+                    let newColor = parseInt(Math.random()*15);
+                    if (newColor > 9) {
+                        newColor = String.fromCharCode(97 + (newColor - 10))
+                    }
+                    colors += newColor;
+                }
+                layerStyle.paint["fill-color"] = '#'+colors;
+                break;
+            default:
+                break;
+        }
+        layerStyle.id = `layer${sourceCount}`;
+
+        let data = {
+            type: 'FeatureCollection',
+            features: [
+                {type: 'Feature', geometry: {type: feature.geometry.type, coordinates: feature.geometry.coordinates}}
+            ]
+        }
+
+        sources.push(
+            <Source key={`key${sourceCount}`} id={`source${sourceCount}`} type="geojson" data={data}>
+                <Layer {...layerStyle}></Layer>
+            </Source>
+        )
+        
+        sourceCount++;
+
+    })
+    console.log(sources);
+    globalSetSourceList(sources);
+}
 
 const MapPage = () => {
+    const handleKeyPress = useCallback((event) => {
+        if (event.ctrlKey) {
+            switch(event.key) {
+                case "z":
+                    console.log("square");
+                    getPolygon("square");
+                    break;
+                case "x":
+                    console.log("triangle");
+                    getPolygon("triangle");
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, []); // runs only once
+    
+    useEffect(() => {
+        // willMount - willUpdate
+        document.addEventListener('keydown', handleKeyPress);
+
+        // willUnmount
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleKeyPress]); // if updates
     const [viewport, setViewport] = useState({
         latitude : 41.01,
         longitude : 28.97,
         width : "100vw",
         height : "100vh",
-        zoom : 10
+        zoom : 5
     });
 
     const [geojson, setGeojson] = useState({
         type: 'FeatureCollection',
         features: [
-            {type: 'Feature', geometry: {type: 'Polygon', coordinates: []}}
+            {type: 'Feature', geometry: {type: 'Point', coordinates: []}}
         ]
     });
+
+    const [sourceList, setSourceList] = useState([]);
+
+    useEffect(() => {
+        setSources(false);
+    }, [geojson])
+
     globalSetGeojson = setGeojson;
-    console.log(geojson.features);
+    globalSetSourceList = setSourceList;
     
     store.dispatch({type : "FEATURE", payload : geojson.features})
-    
-    /* const [pointData, lineData, polygonData] = [
-        {
-            type: 'FeatureCollection',
-            features: [
-                {type: 'Feature', geometry: {type: 'Point', coordinates: []}}
-            ]
-        },
-        {
-            type: 'FeatureCollection',
-            features: [
-                {type: 'Feature', geometry: {type: 'LineString', coordinates: []}}
-            ]
-        },
-        {
-            type: 'FeatureCollection',
-            features: [
-                {type: 'Feature', geometry: {type: 'Polygon', coordinates: []}}
-            ]
-        }
-    ]; */
-
-    /* geojson.features.forEach(feature => {
-        let type = feature.geometry.type;
-        switch(type) {
-            case "Point":
-                pointData.features.push({type: 'Feature', geometry: {type: 'Point', coordinates: feature.geometry.coordinates}})
-                break;
-        }
-    }) */
 
     return (
         <div>
             <div style={{display:"flex", justifyContent:"center"}}>
+                <Button id="get" size="large" style={{...topButtonStyle, marginRight: "10px"}} onClick={buttonClick}>
+                    Get All
+                </Button>
                 <Button id="point" type="primary" size="large" style={topButtonStyle} onClick={buttonClick}>
                     Point
                 </Button>
@@ -311,6 +417,9 @@ const MapPage = () => {
                 <Button id="polygon" type="primary" size="large" style={topButtonStyle} onClick={buttonClick}>
                     Polygon
                 </Button>
+                <Button id="delete" size="large" style={{...topButtonStyle, marginLeft: "10px"}} onClick={buttonClick}>
+                    Delete
+                </Button>
             </div>
             <Map 
                 initialViewState={viewport}
@@ -319,11 +428,9 @@ const MapPage = () => {
                 mapboxAccessToken={token}
                 onClick={handleClick}
             >
-                <Source id="my-data" type="geojson" data={geojson}>
-                    <Layer {...pointLayerStyle} />
-                    <Layer {...lineLayerStyle} />
-                    <Layer {...polygonLayerStyle} />
-                </Source>
+                {
+                    sourceList
+                }
             </Map>
         </div>
     )
